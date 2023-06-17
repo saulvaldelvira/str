@@ -11,23 +11,23 @@
 #define INITIAL_SIZE 16
 
 struct WString{
-        wchar_t* buffer;
-        size_t   length;
-        size_t   buffer_size;
+		wchar_t* buffer;
+		size_t   length;
+		size_t   buffer_size;
 };
 
 WString* wstr_empty(void){
-        return wstr_init(INITIAL_SIZE);
+		return wstr_init(INITIAL_SIZE);
 }
 
 WString* wstr_init(unsigned initial_size){
-        WString *wstr = malloc(sizeof(*wstr));
+		WString *wstr = malloc(sizeof(*wstr));
 	assert(wstr);
-        wstr->buffer = malloc(initial_size * sizeof(wchar_t));
+		wstr->buffer = malloc(initial_size * sizeof(wchar_t));
 	assert(wstr->buffer);
-        wstr->length = 0;
-        wstr->buffer_size = initial_size;
-        return wstr;
+		wstr->length = 0;
+		wstr->buffer_size = initial_size;
+		return wstr;
 }
 
 static size_t wstrnlen(wchar_t *str, unsigned n){
@@ -73,6 +73,8 @@ int wstr_concat_cwstr(WString *wstr, wchar_t *cat, unsigned n){
 }
 
 int wstr_concat_wstr(WString *wstr, WString *cat){
+	if (!wstr || !cat)
+		return -1;
 	return wstr_concat_cwstr(wstr, cat->buffer, cat->length);
 }
 
@@ -139,7 +141,7 @@ WString* wstr_dup(WString *wstr){
 		return NULL;
 	WString *dup = wstr_init(wstr->length);	
 	memcpy(dup->buffer, wstr->buffer, wstr->length * sizeof(wchar_t));
-        dup->length = wstr->length;
+		dup->length = wstr->length;
 	return dup;
 }
 

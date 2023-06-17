@@ -66,6 +66,8 @@ int str_concat_cstr(String *str, char *cat, unsigned n){
 }
 
 int str_concat_str(String *str, String *cat){
+	if (!str || !cat)
+		return -1;
 	return str_concat_cstr(str, cat->buffer, cat->length);
 }
 
