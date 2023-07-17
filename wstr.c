@@ -16,18 +16,25 @@ struct WString{
 		size_t   buffer_size;
 };
 
+static void resize_buffer(WString *wstr, size_t new_size){
+	if (new_size == 0)
+		new_size = 1;
+	wstr->buffer_size = new_size;
+	wstr->buffer = realloc(wstr->buffer, wstr->buffer_size * sizeof(wchar_t));
+	assert(wstr->buffer);
+}
+
 WString* wstr_empty(void){
-		return wstr_init(INITIAL_SIZE);
+	return wstr_init(INITIAL_SIZE);
 }
 
 WString* wstr_init(unsigned initial_size){
-		WString *wstr = malloc(sizeof(*wstr));
+	WString *wstr = malloc(sizeof(*wstr));
 	assert(wstr);
-		wstr->buffer = malloc(initial_size * sizeof(wchar_t));
-	assert(wstr->buffer);
-		wstr->length = 0;
-		wstr->buffer_size = initial_size;
-		return wstr;
+	wstr->buffer = NULL;
+	resize_buffer(wstr, initial_size);
+	wstr->length = 0;
+	return wstr;
 }
 
 static size_t wstrnlen(const wchar_t *str, unsigned n){
@@ -44,12 +51,6 @@ WString* wstr_from_cwstr(const wchar_t *src, unsigned n){
 	WString *wstr = wstr_init(len);
 	wstr_concat_cwstr(wstr, src, n);
 	return wstr;
-}
-
-static void resize_buffer(WString *wstr, size_t new_size){
-	wstr->buffer_size = new_size;	
-	wstr->buffer = realloc(wstr->buffer, wstr->buffer_size * sizeof(wchar_t));
-	assert(wstr->buffer);
 }
 
 void wstr_reserve(WString *wstr, unsigned n){
@@ -131,7 +132,7 @@ const wchar_t* wstr_get_buffer(WString *wstr){
 	if (wstr->length == wstr->buffer_size)
 		resize_buffer(wstr, wstr->buffer_size * 2);
 	wstr->buffer[wstr->length] = '\0';
-	return wstr->buffer;	
+	return wstr->buffer;
 }
 
 wchar_t* wstr_substring(WString *wstr, unsigned start, unsigned end){
@@ -148,7 +149,7 @@ wchar_t* wstr_substring(WString *wstr, unsigned start, unsigned end){
 WString* wstr_dup(WString *wstr){
 	if (!wstr)
 		return NULL;
-	WString *dup = wstr_init(wstr->length);	
+	WString *dup = wstr_init(wstr->length);
 	memcpy(dup->buffer, wstr->buffer, wstr->length * sizeof(wchar_t));
 		dup->length = wstr->length;
 	return dup;

@@ -16,18 +16,25 @@ struct String{
         size_t  buffer_size;
 };
 
+static void resize_buffer(String *str, size_t new_size){
+	if (new_size == 0)
+		new_size = 1;
+	str->buffer_size = new_size;
+	str->buffer = realloc(str->buffer, str->buffer_size * sizeof(char));
+	assert(str->buffer);
+}
+
 String* str_empty(void){
         return str_init(INITIAL_SIZE);
 }
 
 String* str_init(unsigned initial_size){
-        String *str = malloc(sizeof(*str));
+	String *str = malloc(sizeof(*str));
 	assert(str);
-        str->buffer = malloc(initial_size * sizeof(char));
-	assert(str->buffer);
-        str->length = 0;
-        str->buffer_size = initial_size;
-        return str;
+	str->buffer = NULL;
+	resize_buffer(str, initial_size);
+	str->length = 0;
+	return str;
 }
 
 String* str_from_cstr(const char *src, unsigned n){
@@ -37,12 +44,6 @@ String* str_from_cstr(const char *src, unsigned n){
 	String *str = str_init(len);
 	str_concat_cstr(str, src, n);
 	return str;
-}
-
-static void resize_buffer(String *str, size_t new_size){
-	str->buffer_size = new_size;	
-	str->buffer = realloc(str->buffer, str->buffer_size * sizeof(char));
-	assert(str->buffer);
 }
 
 void str_reserve(String *str, unsigned n){
@@ -124,7 +125,7 @@ const char* str_get_buffer(String *str){
 	if (str->length == str->buffer_size)
 		resize_buffer(str, str->buffer_size * 2);
 	str->buffer[str->length] = '\0';
-	return str->buffer;	
+	return str->buffer;
 }
 
 char* str_substring(String *str, unsigned start, unsigned end){
@@ -149,7 +150,7 @@ int str_transform(String *str, char(*func)(char)){
 String* str_dup(String *str){
 	if (!str)
 		return NULL;
-	String *dup = str_init(str->length);	
+	String *dup = str_init(str->length);
 	memcpy(dup->buffer, str->buffer, str->length * sizeof(char));
         dup->length = str->length;
 	return dup;
