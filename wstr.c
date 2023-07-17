@@ -125,6 +125,15 @@ wchar_t* wstr_to_cwstr(WString *wstr){
 	return cwstr;
 }
 
+const wchar_t* wstr_get_buffer(WString *wstr){
+	if (!wstr)
+		return NULL;
+	if (wstr->length == wstr->buffer_size)
+		resize_buffer(wstr, wstr->buffer_size * 2);
+	wstr->buffer[wstr->length] = '\0';
+	return wstr->buffer;	
+}
+
 wchar_t* wstr_substring(WString *wstr, unsigned start, unsigned end){
 	if (!wstr || end >= wstr->length || end < start)
 		return NULL;

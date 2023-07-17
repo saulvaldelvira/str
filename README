@@ -18,9 +18,10 @@ int  str_push_char(String *str, char c);
 char str_get_at(String *str, unsigned index);
 int  str_set_at(String *str, unsigned index, char c);
 
-char*   str_to_cstr(String *str);
-char*   str_substring(String *str, unsigned start, unsigned end);
-String* str_dup(String *str);
+char*       str_to_cstr(String *str);
+char*       str_substring(String *str, unsigned start, unsigned end);
+String*     str_dup(String *str);
+const char* str_get_buffer(String *str);
 
 size_t str_length(String *str);
 char*  str_tok(String *str, char *tokens);

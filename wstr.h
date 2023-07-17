@@ -73,6 +73,12 @@ int wstr_insert(WString *wstr, wchar_t *insert, unsigned n, unsigned index);
 wchar_t* wstr_to_cwstr(WString *wstr);
 
 /**
+ * Returns a pointer to the internal buffer of the WString.
+ * A null terminator will be appended.
+ */
+const wchar_t* wstr_get_buffer(WString *wstr);
+
+/**
  * Returns a substring of the WString in the range [start, end)
  */
 wchar_t* wstr_substring(WString *wstr, unsigned start, unsigned end);

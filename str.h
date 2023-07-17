@@ -73,6 +73,12 @@ int str_insert(String *str, char *insert, unsigned n, unsigned index);
 char* str_to_cstr(String *str);
 
 /**
+ * Returns a pointer to the internal buffer of the String.
+ * A null terminator will be appended.
+ */
+const char* str_get_buffer(String *str);
+
+/**
  * Returns a substring of the String in the range [start, end)
  */
 char* str_substring(String *str, unsigned start, unsigned end);

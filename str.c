@@ -118,6 +118,15 @@ char* str_to_cstr(String *str){
 	return cstr;
 }
 
+const char* str_get_buffer(String *str){
+	if (!str)
+		return NULL;
+	if (str->length == str->buffer_size)
+		resize_buffer(str, str->buffer_size * 2);
+	str->buffer[str->length] = '\0';
+	return str->buffer;	
+}
+
 char* str_substring(String *str, unsigned start, unsigned end){
 	if (!str || end >= str->length || end < start)
 		return NULL;
