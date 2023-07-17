@@ -25,7 +25,7 @@ WString* wstr_init(unsigned initial_size);
  * Builds a WString, from the given source cwstring.
  * @param n max length of src
  */
-WString* wstr_from_cwstr(wchar_t *src, unsigned n);
+WString* wstr_from_cwstr(const wchar_t *src, unsigned n);
 
 /**
  * Reserves space in the WString for n characters
@@ -36,7 +36,7 @@ void wstr_reserve(WString *wstr, unsigned n);
  * Concatenates the given cwstring at the end of the WString
  * @param n max length of cat
  */
-int wstr_concat_cwstr(WString *wstr, wchar_t *cat, unsigned n);
+int wstr_concat_cwstr(WString *wstr, const wchar_t *cat, unsigned n);
 
 /**
  * Concatenates a WString at the end of another
@@ -64,7 +64,7 @@ int wstr_set_at(WString *wstr, unsigned index, wchar_t c);
  * Inserts the given cwstring at the given index.
  * @param n, max length of the insert string
  */
-int wstr_insert(WString *wstr, wchar_t *insert, unsigned n, unsigned index);
+int wstr_insert(WString *wstr, const wchar_t *insert, unsigned n, unsigned index);
 
 /**
  * Returns a cwtring copy of the given WString.

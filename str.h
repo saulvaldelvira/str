@@ -25,7 +25,7 @@ String* str_init(unsigned initial_size);
  * Builds a String, from the given source cstring.
  * @param n max length of src
  */
-String* str_from_cstr(char *src, unsigned n);
+String* str_from_cstr(const char *src, unsigned n);
 
 /**
  * Reserves space in the String for n characters
@@ -36,7 +36,7 @@ void str_reserve(String *str, unsigned n);
  * Concatenates the given cstring at the end of the String
  * @param n max length of cat
  */
-int str_concat_cstr(String *str, char *cat, unsigned n);
+int str_concat_cstr(String *str, const char *cat, unsigned n);
 
 /**
  * Concatenates a String at the end of another
@@ -64,7 +64,7 @@ int str_set_at(String *str, unsigned index, char c);
  * Inserts the given cstring at the given index.
  * @param n, max length of the insert string
  */
-int str_insert(String *str, char *insert, unsigned n, unsigned index);
+int str_insert(String *str, const char *insert, unsigned n, unsigned index);
 
 /**
  * Returns a ctring copy of the given String.

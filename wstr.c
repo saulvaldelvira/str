@@ -30,14 +30,14 @@ WString* wstr_init(unsigned initial_size){
 		return wstr;
 }
 
-static size_t wstrnlen(wchar_t *str, unsigned n){
+static size_t wstrnlen(const wchar_t *str, unsigned n){
 	size_t len = 0;
 	while (*str++ != L'\0' && n-- > 0)
 		len++;
 	return len;
 }
 
-WString* wstr_from_cwstr(wchar_t *src, unsigned n){
+WString* wstr_from_cwstr(const wchar_t *src, unsigned n){
 	if (!src)
 		return NULL;
 	size_t len = wstrnlen(src, n);
@@ -57,7 +57,7 @@ void wstr_reserve(WString *wstr, unsigned n){
 		resize_buffer(wstr, n);
 }
 
-int wstr_concat_cwstr(WString *wstr, wchar_t *cat, unsigned n){
+int wstr_concat_cwstr(WString *wstr, const wchar_t *cat, unsigned n){
 	if (!wstr || !cat)
 		return -1;
 	size_t len = wstrnlen(cat, n);
@@ -98,7 +98,7 @@ int wstr_set_at(WString *wstr, unsigned index, wchar_t c){
 	return wstr->buffer[index] = c;
 }
 
-int wstr_insert(WString *wstr, wchar_t *insert, unsigned n, unsigned index){
+int wstr_insert(WString *wstr, const wchar_t *insert, unsigned n, unsigned index){
 	if (!wstr || !insert)
 		return -1;
 	if (index > wstr->length)

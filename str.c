@@ -30,7 +30,7 @@ String* str_init(unsigned initial_size){
         return str;
 }
 
-String* str_from_cstr(char *src, unsigned n){
+String* str_from_cstr(const char *src, unsigned n){
 	if (!src)
 		return NULL;
 	size_t len = strnlen(src, n);
@@ -50,7 +50,7 @@ void str_reserve(String *str, unsigned n){
 		resize_buffer(str, n);
 }
 
-int str_concat_cstr(String *str, char *cat, unsigned n){
+int str_concat_cstr(String *str, const char *cat, unsigned n){
 	if (!str || !cat)
 		return -1;
 	size_t len = strnlen(cat, n);
@@ -91,7 +91,7 @@ int str_set_at(String *str, unsigned index, char c){
 	return str->buffer[index] = c;
 }
 
-int str_insert(String *str, char *insert, unsigned n, unsigned index){
+int str_insert(String *str, const char *insert, unsigned n, unsigned index){
 	if (!str || !insert)
 		return -1;
 	if (index > str->length)
