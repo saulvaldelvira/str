@@ -13,7 +13,7 @@ INSTALL_PATH ?= /usr/local
 
 libs: $(OFILES) $(HFILES)
 	@ $(CC) $(CCFLAGS) -shared -o libstr.so $(OFILES)
-	@ $(AR) $(ARFLAGS) libstr.a $(OFILES)
+	@ $(AR) $(ARFLAGS) libstr-static.a $(OFILES)
 
 install: libs
 	@ sudo su -c '\
