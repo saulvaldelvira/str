@@ -15,6 +15,7 @@ void    str_reserve(String *str, unsigned n);
 int  str_concat_cstr(String *str, const char *cat, unsigned n);
 int  str_concat_str(String *str, String *cat);
 int  str_push_char(String *str, char c);
+int  str_remove_at(String *str, unsigned index);
 char str_get_at(String *str, unsigned index);
 int  str_set_at(String *str, unsigned index, char c);
 int  str_insert(String *str, const char *insert, unsigned n, unsigned index);

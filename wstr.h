@@ -51,6 +51,11 @@ int wstr_concat_wstr(WString *wstr, WString *cat);
 int wstr_push_char(WString *wstr, wchar_t c);
 
 /**
+ * Removes the characater at the given index
+ */
+int wstr_remove_at(WString *str, unsigned index);
+
+/**
  * Gets the character at the given index
  */
 wchar_t wstr_get_at(WString *wstr, unsigned index);

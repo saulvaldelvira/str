@@ -83,6 +83,17 @@ int wstr_push_char(WString *wstr, wchar_t c){
 	return wstr_concat_cwstr(wstr, (wchar_t[]){c, L'\0'}, 2);
 }
 
+int wstr_remove_at(WString *wstr, unsigned index){
+	if (!wstr)
+		return -1;
+	if (index >= wstr->length)
+		return -2;
+	if (index < wstr->length - 1)
+		memcpy(&wstr->buffer[index], &wstr->buffer[index + 1], (wstr->length - index - 1) * sizeof(wchar_t));
+	wstr->length--;
+	return 1;
+}
+
 wchar_t wstr_get_at(WString *wstr, unsigned index){
 	if (!wstr)
 		return -1;

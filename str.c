@@ -76,6 +76,17 @@ int str_push_char(String *str, char c){
 	return str_concat_cstr(str, (char[]){c,'\0'}, 2);
 }
 
+int str_remove_at(String *str, unsigned index){
+	if (!str)
+		return -1;
+	if (index >= str->length)
+		return -2;
+	if (index < str->length - 1)
+		memcpy(&str->buffer[index], &str->buffer[index + 1], (str->length - index - 1) * sizeof(char));
+	str->length--;
+	return 1;
+}
+
 char str_get_at(String *str, unsigned index){
 	if (!str)
 		return -1;
