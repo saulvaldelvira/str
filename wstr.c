@@ -147,8 +147,10 @@ const wchar_t* wstr_get_buffer(WString *wstr){
 }
 
 wchar_t* wstr_substring(WString *wstr, unsigned start, unsigned end){
-	if (!wstr || end >= wstr->length || end < start)
+	if (!wstr || end < start)
 		return NULL;
+	if (end >= wstr->length)
+		end = wstr->length - 1;
 	size_t len = end - start;
 	wchar_t *substring = malloc((len + 1) * sizeof(wchar_t));
 	assert(substring);

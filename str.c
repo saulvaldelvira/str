@@ -140,8 +140,10 @@ const char* str_get_buffer(String *str){
 }
 
 char* str_substring(String *str, unsigned start, unsigned end){
-	if (!str || end >= str->length || end < start)
+	if (!str || end < start)
 		return NULL;
+	if (end >= str->length)
+		end = str->length - 1;
 	size_t len = end - start;
 	char *substring = malloc((len + 1) * sizeof(char));
 	assert(substring);
