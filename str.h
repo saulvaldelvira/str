@@ -51,6 +51,11 @@ int str_concat_str(String *str, String *cat);
 int str_push_char(String *str, char c);
 
 /**
+ * Removes the last character in the String
+*/
+int str_pop(String *str);
+
+/**
  * Removes the characater at the given index
  */
 int str_remove_at(String *str, unsigned index);

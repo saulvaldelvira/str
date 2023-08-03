@@ -51,6 +51,11 @@ int wstr_concat_wstr(WString *wstr, WString *cat);
 int wstr_push_char(WString *wstr, wchar_t c);
 
 /**
+ * Removes the last character in the WString
+*/
+int wstr_pop(WString *wstr);
+
+/**
  * Removes the characater at the given index
  */
 int wstr_remove_at(WString *str, unsigned index);
@@ -58,7 +63,7 @@ int wstr_remove_at(WString *str, unsigned index);
 /**
  * Removes the range [start, end) from the WString
 */
-int wstr_remove_range(WString *str, unsigned start, unsigned end);
+int wstr_remove_range(WString *wstr, unsigned start, unsigned end);
 
 /**
  * Gets the character at the given index

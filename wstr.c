@@ -83,6 +83,12 @@ int wstr_push_char(WString *wstr, wchar_t c){
 	return wstr_concat_cwstr(wstr, (wchar_t[]){c, L'\0'}, 2);
 }
 
+int wstr_pop(WString *wstr){
+	if (!wstr)
+		return -1;
+	return wstr_remove_at(wstr, wstr->length - 1);
+}
+
 int wstr_remove_at(WString *wstr, unsigned index){
 	if (!wstr)
 		return -1;

@@ -76,6 +76,12 @@ int str_push_char(String *str, char c){
 	return str_concat_cstr(str, (char[]){c,'\0'}, 2);
 }
 
+int str_pop(String *str){
+	if (!str)
+		return -1;
+	return str_remove_at(str, str->length - 1);
+}
+
 int str_remove_at(String *str, unsigned index){
 	if (!str)
 		return -1;
