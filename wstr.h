@@ -56,6 +56,11 @@ int wstr_push_char(WString *wstr, wchar_t c);
 int wstr_remove_at(WString *str, unsigned index);
 
 /**
+ * Removes the range [start, end) from the WString
+*/
+int wstr_remove_range(WString *str, unsigned start, unsigned end);
+
+/**
  * Gets the character at the given index
  */
 wchar_t wstr_get_at(WString *wstr, unsigned index);

@@ -87,6 +87,19 @@ int str_remove_at(String *str, unsigned index){
 	return 1;
 }
 
+int str_remove_range(String *str, unsigned start, unsigned end){
+	if (!str)
+		return -1;
+	if (end < start)
+		return -2;
+	if (end > str->length)
+		end = str->length;
+	size_t len = str->length - end;
+	memmove(&str->buffer[start], &str->buffer[end], len * sizeof(char));
+	str->length -= end - start;
+	return 1;
+}
+
 char str_get_at(String *str, unsigned index){
 	if (!str)
 		return -1;
@@ -142,8 +155,8 @@ const char* str_get_buffer(String *str){
 char* str_substring(String *str, unsigned start, unsigned end){
 	if (!str || end < start)
 		return NULL;
-	if (end >= str->length)
-		end = str->length - 1;
+	if (end > str->length)
+		end = str->length;
 	size_t len = end - start;
 	char *substring = malloc((len + 1) * sizeof(char));
 	assert(substring);

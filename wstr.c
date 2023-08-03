@@ -94,6 +94,19 @@ int wstr_remove_at(WString *wstr, unsigned index){
 	return 1;
 }
 
+int wstr_remove_range(WString *wstr, unsigned start, unsigned end){
+	if (!wstr)
+		return -1;
+	if (end < start)
+		return -2;
+	if (end > wstr->length)
+		end = wstr->length;
+	size_t len = wstr->length - end;
+	memmove(&wstr->buffer[start], &wstr->buffer[end], len * sizeof(wchar_t));
+	wstr->length -= end - start;
+	return 1;
+}
+
 wchar_t wstr_get_at(WString *wstr, unsigned index){
 	if (!wstr)
 		return -1;
@@ -149,8 +162,8 @@ const wchar_t* wstr_get_buffer(WString *wstr){
 wchar_t* wstr_substring(WString *wstr, unsigned start, unsigned end){
 	if (!wstr || end < start)
 		return NULL;
-	if (end >= wstr->length)
-		end = wstr->length - 1;
+	if (end > wstr->length)
+		end = wstr->length;
 	size_t len = end - start;
 	wchar_t *substring = malloc((len + 1) * sizeof(wchar_t));
 	assert(substring);

@@ -56,6 +56,11 @@ int str_push_char(String *str, char c);
 int str_remove_at(String *str, unsigned index);
 
 /**
+ * Removes the range [start, end) from the String
+*/
+int str_remove_range(String *str, unsigned start, unsigned end);
+
+/**
  * Gets the character at the given index
  */
 char str_get_at(String *str, unsigned index);
