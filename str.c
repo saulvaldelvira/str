@@ -183,6 +183,8 @@ String* str_dup(String *str){
 }
 
 size_t str_length(String *str){
+	if (!str)
+		return 0;
 	return str->length;
 }
 

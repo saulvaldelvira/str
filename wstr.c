@@ -182,6 +182,8 @@ WString* wstr_dup(WString *wstr){
 }
 
 size_t wstr_length(WString *wstr){
+	if (!wstr)
+		return 0;
 	return wstr->length;
 }
 
