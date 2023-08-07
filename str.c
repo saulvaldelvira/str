@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2023 - Saúl Valdelvira
  * License: MIT
- * Email: saulvaldelvira@gmail.com
+ * Email: saul@saulv.es
  */
 #include "str.h"
 #include <stdlib.h>
@@ -10,6 +10,10 @@
 
 #define INITIAL_SIZE 16
 
+/**
+ * %String struct
+ * @see str.h
+*/
 struct String{
         char    *buffer;
         size_t  length;

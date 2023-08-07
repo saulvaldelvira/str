@@ -1,11 +1,16 @@
 /**
- * Copyright (C) 2023 - Saúl Valdelvira
- * License: MIT
- * Email: saulvaldelvira@gmail.com
+ * @file wstr.h
+ * WString definition
+ * 
+ * Copyright (C) 2023 - Saúl Valdelvira \n
+ * License: MIT \n
+ * Email: saul@saulv.es
  */
+/// @cond
 #pragma once
 #ifndef WSTR_H
 #define WSTR_H
+/// @endcond
 
 #include <stddef.h> // size_t, wchar_t
 
@@ -17,7 +22,7 @@ typedef struct WString WString;
 WString* wstr_empty(void);
 
 /**
- * Builds a WString, with the given initial size
+ * Builds a WString with the given initial size
  */
 WString* wstr_init(unsigned initial_size);
 
@@ -29,6 +34,8 @@ WString* wstr_from_cwstr(const wchar_t *src, unsigned n);
 
 /**
  * Reserves space in the WString for n characters
+ * @note n characters including the ones already in the String, 
+ *       it does not reserve space for n more characters.
  */
 void wstr_reserve(WString *wstr, unsigned n);
 

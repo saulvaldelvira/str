@@ -1,11 +1,16 @@
 /**
- * Copyright (C) 2023 - Saúl Valdelvira
- * License: MIT
- * Email: saulvaldelvira@gmail.com
+ * @file str.h
+ * String definition
+ * 
+ * Copyright (C) 2023 - Saúl Valdelvira \n
+ * License: MIT \n
+ * Email: saul@saulv.es
  */
+/// @cond
 #pragma once
 #ifndef STR_H
 #define STR_H
+/// @endcond
 
 #include <stddef.h> // size_t
 
@@ -17,7 +22,7 @@ typedef struct String String;
 String* str_empty(void);
 
 /**
- * Builds a String, with the given initial size
+ * Builds a String with the given initial size
  */
 String* str_init(unsigned initial_size);
 
@@ -29,6 +34,8 @@ String* str_from_cstr(const char *src, unsigned n);
 
 /**
  * Reserves space in the String for n characters
+ * @note n characters including the ones already in the String, 
+ *       it does not reserve space for n more characters.
  */
 void str_reserve(String *str, unsigned n);
 

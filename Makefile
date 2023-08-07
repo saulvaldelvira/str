@@ -1,4 +1,4 @@
-.PHONY: clean libs install uninstall
+.PHONY: clean libs install uninstall doxygen
 CC = gcc
 CCFLAGS = -Wall -Wextra -Werror -pedantic -g -O3 -fPIC
 
@@ -31,8 +31,14 @@ uninstall:
 	  rm -f $(INSTALL_PATH)/include/wstr.h ;\
 	  ldconfig $(INSTALL_PATH)/lib '
 
+doxygen: ./doxygen/
+	doxygen .doxyfile
+
+%/:
+	@ mkdir $@
+
 .c.o:
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 clean:
-	rm -f *.o libstr*
+	rm -rf *.o libstr* doxygen

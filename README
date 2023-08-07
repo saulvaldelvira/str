@@ -2,8 +2,8 @@ String library.
 
 Structs
 -------
-String
-WString
+String (str.h)
+WString (wstr.h)
 
 Functions
 ---------
@@ -43,4 +43,8 @@ Building
 make: build the library
 make install: install the library. Default path: /usr/local, can be modified changing INSTALL_PATH (make install INSTALL_PATH=/usr)
 make uninstall: uninstall the library. INSTALL_PATH must be the same as on instalation.
+make doxygen: Build doxygen documentation in the ./doxygen folder.
 make clean: Cleans binary files
+
+Source code: https://git.saulv.es/str
+Documentation: https://wiki.saulv.es/str
