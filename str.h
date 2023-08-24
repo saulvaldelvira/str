@@ -149,4 +149,11 @@ void str_clear(String *str);
  */
 void str_free(String *str);
 
+/**
+ * Frees multiple Strings at once
+ * @param n number of String to free
+ * @param ... all the Strings to free
+*/
+void str_free_all(unsigned int n, ...);
+
 #endif // STR_H

@@ -149,4 +149,11 @@ void wstr_clear(WString *wstr);
  */
 void wstr_free(WString *wstr);
 
+/**
+ * Frees multiple WStrings at once
+ * @param n number of WString to free
+ * @param ... all the WStrings to free
+*/
+void wstr_free_all(unsigned int n, ...);
+
 #endif // WSTR_H

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h> // memcpy
+#include <stdarg.h>
 
 #define INITIAL_SIZE 16
 
@@ -251,4 +252,14 @@ void wstr_free(WString *wstr){
 		free(wstr->buffer);
 		free(wstr);
 	}
+}
+
+void wstr_free_all(unsigned int n, ...){
+	va_list arg;
+	va_start(arg, n);
+	while (n-- > 0){
+		WString *wstr = va_arg(arg, WString*);
+		wstr_free(wstr);
+	}
+	va_end(arg);
 }

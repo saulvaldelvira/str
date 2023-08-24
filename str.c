@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h> // memcpy, strnlen
+#include <stdarg.h>
 
 #define INITIAL_SIZE 16
 
@@ -244,4 +245,14 @@ void str_free(String *str){
 		free(str->buffer);
 		free(str);
 	}
+}
+
+void str_free_all(unsigned int n, ...){
+	va_list arg;
+	va_start(arg, n);
+	while (n-- > 0){
+		String *str = va_arg(arg, String*);
+		str_free(str);
+	}
+	va_end(arg);
 }
