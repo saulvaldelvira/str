@@ -134,7 +134,7 @@ int wstr_set_at(WString *wstr, unsigned index, wchar_t c){
 	return wstr->buffer[index] = c;
 }
 
-int wstr_insert(WString *wstr, const wchar_t *insert, unsigned n, unsigned index){
+int wstr_insert_cwstr(WString *wstr, const wchar_t *insert, unsigned n, unsigned index){
 	if (!wstr || !insert)
 		return -1;
 	if (index > wstr->length)
@@ -150,6 +150,10 @@ int wstr_insert(WString *wstr, const wchar_t *insert, unsigned n, unsigned index
 	memcpy(&wstr->buffer[index], insert, len * sizeof(wchar_t));
 	wstr->length += len;
 	return 1;
+}
+
+int wstr_insert(WString *wstr, wchar_t c, unsigned index){
+	return wstr_insert_cwstr(wstr, (wchar_t[]){c, L'\0'}, 2, index);
 }
 
 wchar_t* wstr_to_cwstr(WString *wstr){

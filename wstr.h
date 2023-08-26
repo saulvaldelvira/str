@@ -86,7 +86,13 @@ int wstr_set_at(WString *wstr, unsigned index, wchar_t c);
  * Inserts the given cwstring at the given index.
  * @param n, max length of the insert string
  */
-int wstr_insert(WString *wstr, const wchar_t *insert, unsigned n, unsigned index);
+int wstr_insert_cwstr(WString *wstr, const wchar_t *insert, unsigned n, unsigned index);
+
+/**
+ * Inserts the given wchar at the given index.
+ * @param n, max length of the insert string
+ */
+int wstr_insert(WString *wstr, wchar_t c, unsigned index);
 
 /**
  * Returns a cwtring copy of the given WString.

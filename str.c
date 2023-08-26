@@ -127,7 +127,7 @@ int str_set_at(String *str, unsigned index, char c){
 	return str->buffer[index] = c;
 }
 
-int str_insert(String *str, const char *insert, unsigned n, unsigned index){
+int str_insert_cstr(String *str, const char *insert, unsigned n, unsigned index){
 	if (!str || !insert)
 		return -1;
 	if (index > str->length)
@@ -143,6 +143,10 @@ int str_insert(String *str, const char *insert, unsigned n, unsigned index){
 	memcpy(&str->buffer[index], insert, len * sizeof(char));
 	str->length += len;
 	return 1;
+}
+
+int str_insert(String *str, char c, unsigned index){
+	return str_insert_cstr(str, (char[]){c, '\0'}, 2, index);
 }
 
 char* str_to_cstr(String *str){

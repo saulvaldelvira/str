@@ -86,7 +86,13 @@ int str_set_at(String *str, unsigned index, char c);
  * Inserts the given cstring at the given index.
  * @param n, max length of the insert string
  */
-int str_insert(String *str, const char *insert, unsigned n, unsigned index);
+int str_insert_cstr(String *str, const char *insert, unsigned n, unsigned index);
+
+/**
+ * Inserts char at the given index.
+ * @param n, max length of the insert string
+ */
+int str_insert(String *str, char c, unsigned index);
 
 /**
  * Returns a ctring copy of the given String.
