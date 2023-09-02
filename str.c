@@ -208,13 +208,14 @@ char* str_tok(String *str, char *tokens){
 	static size_t pos = 0;
 	static String *curr_str = NULL;
 	free(prev_tok);
+	prev_tok = NULL;
 	if (str != NULL){
 		pos = 0;
 		curr_str = str;
 	}
 	if (!curr_str || !tokens || pos == curr_str->length)
 		return NULL;
-	for (size_t i = pos + 1; i < curr_str->length; i++){
+	for (size_t i = pos; i < curr_str->length; i++){
 		for (char *t = tokens; *t != '\0'; t++){
 			if (curr_str->buffer[i] == *t){
 				size_t len = i - pos;
@@ -228,7 +229,7 @@ char* str_tok(String *str, char *tokens){
 	}
 	size_t len = curr_str->length - pos;
 	prev_tok = malloc(len + 1);
-	memcpy(prev_tok, &curr_str->buffer[pos], len);
+	memcpy(prev_tok, &curr_str->buffer[pos], len * sizeof(char));
 	prev_tok[len] = '\0';
 	pos = curr_str->length;
 	return prev_tok;

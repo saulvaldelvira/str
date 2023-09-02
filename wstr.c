@@ -207,13 +207,14 @@ wchar_t* wstr_tok(WString *wstr, wchar_t *tokens){
 	static size_t pos = 0;
 	static WString *curr_str = NULL;
 	free(prev_tok);
+	prev_tok = NULL;
 	if (wstr != NULL){
 		pos = 0;
 		curr_str = wstr;
 	}
 	if (!curr_str || !tokens || pos == curr_str->length)
 		return NULL;
-	for (size_t i = pos + 1; i < curr_str->length; i++){
+	for (size_t i = pos; i < curr_str->length; i++){
 		for (wchar_t *t = tokens; *t != '\0'; t++){
 			if (curr_str->buffer[i] == *t){
 				size_t len = i - pos;
@@ -227,8 +228,8 @@ wchar_t* wstr_tok(WString *wstr, wchar_t *tokens){
 	}
 	size_t len = curr_str->length - pos;
 	prev_tok = malloc((len + 1) * sizeof(wchar_t));
-	memcpy(prev_tok, &curr_str->buffer[pos], len);
-	prev_tok[len] = '\0';
+	memcpy(prev_tok, &curr_str->buffer[pos], len * sizeof(wchar_t));
+	prev_tok[len] = L'\0';
 	pos = curr_str->length;
 	return prev_tok;
 }
