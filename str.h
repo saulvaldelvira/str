@@ -135,6 +135,14 @@ size_t str_length(String *str);
 char* str_tok(String *str, char *tokens);
 
 /**
+ * Finds the first occurence of substr, starting at index [start_at]
+ * @param substr string to search
+ * @param start_at index of the String to start the search
+ * @return Index of the first occurence of substr, or -1 if there isn't any
+ */
+int str_find_substring(String *str, const char *substr, unsigned start_at);
+
+/**
  * Transforms all the charcters in the String, one by one,
  * using the given function.
  */

@@ -234,6 +234,24 @@ wchar_t* wstr_tok(WString *wstr, wchar_t *tokens){
 	return prev_tok;
 }
 
+int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at){
+	if (!wstr || !substr)
+		return -2;
+	if (start_at >= wstr->length)
+		return -3;
+	for (size_t i = start_at; i < wstr->length; i++){
+		const wchar_t *c = substr;
+		for (size_t j = i; j < wstr->length; j++){
+			if (*c != wstr->buffer[j])
+				break;
+			c++;
+			if (*c == L'\0')
+                                return i;
+		}
+	}
+	return -1;
+}
+
 int wstr_transform(WString *wstr, wchar_t(*func)(wchar_t)){
 	if (!wstr || !func)
 		return -1;

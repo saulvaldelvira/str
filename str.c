@@ -235,6 +235,24 @@ char* str_tok(String *str, char *tokens){
 	return prev_tok;
 }
 
+int str_find_substring(String *str, const char *substr, unsigned start_at){
+        if (!str || !substr)
+                return -2;
+        if (start_at >= str->length)
+                return -3;
+        for (size_t i = start_at; i < str->length; i++){
+                const char *c = substr;
+                for (size_t j = i; j < str->length; j++){
+                        if (*c != str->buffer[j])
+                                break;
+                        c++;
+			if (*c == L'\0')
+                                return i;
+		}
+        }
+        return -1;
+}
+
 void str_shrink(String *str){
 	if (str && str->buffer_size > str->length)
 		resize_buffer(str, str->length);

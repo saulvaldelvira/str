@@ -135,6 +135,14 @@ size_t wstr_length(WString *wstr);
 wchar_t* wstr_tok(WString *wstr, wchar_t *tokens);
 
 /**
+ * Finds the first occurence of substr, starting at index [start_at]
+ * @param substr string to search
+ * @param start_at index of the WString to start the search
+ * @return Index of the first occurence of substr, or -1 if there isn't any
+ */
+int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at);
+
+/**
  * Transforms all the charcters in the WString, one by one,
  * using the given function.
  */
