@@ -40,6 +40,12 @@ void wstr_reserve(WString *wstr, unsigned n);
 int wstr_concat_cwstr(WString *wstr, const wchar_t *cat, unsigned n);
 
 /**
+ * Concatenates the given cstring at the end of the WString
+ * @param n max length of cat
+ */
+int wstr_concat_cstr(WString *wstr, const char *cat, unsigned n);
+
+/**
  * Concatenates a WString at the end of another
  * @cat source WString
  * @str dest WString

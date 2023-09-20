@@ -58,17 +58,33 @@ void wstr_reserve(WString *wstr, unsigned n){
 		resize_buffer(wstr, n);
 }
 
+static inline void resize_if_needed(WString *wstr, size_t size){
+	if (wstr->length + size > wstr->buffer_size){
+		size_t new_size = wstr->buffer_size * 2;
+		while (wstr->length + size > new_size)
+			new_size *= 2;
+		resize_buffer(wstr, new_size);
+	}
+}
+
 int wstr_concat_cwstr(WString *wstr, const wchar_t *cat, unsigned n){
 	if (!wstr || !cat)
 		return -1;
 	size_t len = wstrnlen(cat, n);
-	if (wstr->length + len > wstr->buffer_size){
-		size_t new_size = wstr->buffer_size * 2;
-		if (wstr->length + len > new_size)
-			new_size += len;
-		resize_buffer(wstr, new_size);
-	}
+	resize_if_needed(wstr, len);
 	memcpy(&wstr->buffer[wstr->length], cat, len * sizeof(wchar_t));
+	wstr->length += len;
+	return 1;
+}
+
+int wstr_concat_cstr(WString *wstr, const char *cat, unsigned n){
+	if (!wstr || !cat)
+		return -1;
+	size_t len = strnlen(cat, n);
+	resize_if_needed(wstr, len);
+	wchar_t *start = &wstr->buffer[wstr->length];
+	while (--n > 0 && *cat)
+		*start++ = *cat++;
 	wstr->length += len;
 	return 1;
 }
