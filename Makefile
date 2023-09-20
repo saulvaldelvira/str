@@ -32,7 +32,14 @@ uninstall:
 	  ldconfig $(INSTALL_PATH)/lib '
 
 doxygen: ./doxygen/
-	doxygen .doxyfile
+	@ echo -e "\
+	/** @mainpage \n \
+	    @verbinclude README \n \
+	*//**\
+	   @file str.h  String definition. \n \
+	   @file wstr.h  WString definition. \n */" > ./doxygen/doc.doxy
+	@ doxygen .doxyfile
+	@ rm -f ./doxygen/doc.doxy
 
 %/:
 	@ mkdir $@

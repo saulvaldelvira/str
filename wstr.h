@@ -1,16 +1,10 @@
-/**
- * @file wstr.h
- * WString definition
- * 
- * Copyright (C) 2023 - Saúl Valdelvira \n
- * License: MIT \n
- * Email: saul@saulv.es
+/*
+ * wstr.h - String implementation.
+ * Author: Saúl Valdelvira (2023)
  */
-/// @cond
 #pragma once
 #ifndef WSTR_H
 #define WSTR_H
-/// @endcond
 
 #include <stddef.h> // size_t, wchar_t
 
@@ -34,7 +28,7 @@ WString* wstr_from_cwstr(const wchar_t *src, unsigned n);
 
 /**
  * Reserves space in the WString for n characters
- * @note n characters including the ones already in the String, 
+ * @note n characters including the ones already in the String,
  *       it does not reserve space for n more characters.
  */
 void wstr_reserve(WString *wstr, unsigned n);

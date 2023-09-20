@@ -1,7 +1,6 @@
-/**
- * Copyright (C) 2023 - Saúl Valdelvira
- * License: MIT
- * Email: saul@saulv.es
+/*
+ * wstr.c - WString implementation.
+ * Author: Saúl Valdelvira (2023)
  */
 #include "wstr.h"
 #include <stdlib.h>
@@ -11,10 +10,6 @@
 
 #define INITIAL_SIZE 16
 
-/**
- * %WString struct
- * @see wstr.h
-*/
 struct WString{
 		wchar_t* buffer;
 		size_t   length;
