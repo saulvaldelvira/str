@@ -214,7 +214,7 @@ char* str_tok(String *str, char *tokens){
 		for (char *t = tokens; *t != '\0'; t++){
 			if (curr_str->buffer[i] == *t){
 				size_t len = i - pos;
-				prev_tok = malloc(len + 1);
+				prev_tok = malloc((len + 1) * sizeof(char));
 				memcpy(prev_tok, &curr_str->buffer[pos], len * sizeof(char));
 				prev_tok[len] = '\0';
 				pos = i + 1;
