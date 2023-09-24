@@ -263,6 +263,20 @@ int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at)
 	return -1;
 }
 
+int wstr_replace(WString *wstr, const wchar_t *substr, const wchar_t *replacement){
+	size_t substr_len = wstrnlen(substr, -1);
+	int i = 0;
+	i = wstr_find_substring(wstr, substr, i);
+	if (i < 0)
+		return i;
+	while (i >= 0){
+		wstr_remove_range(wstr, i, i + substr_len);
+		wstr_insert_cwstr(wstr, replacement, -1, i);
+		i = wstr_find_substring(wstr, substr, i + substr_len);
+	}
+	return 1;
+}
+
 int wstr_transform(WString *wstr, wchar_t(*func)(wchar_t)){
 	if (!wstr || !func)
 		return -1;

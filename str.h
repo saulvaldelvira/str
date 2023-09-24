@@ -137,6 +137,14 @@ char* str_tok(String *str, char *tokens);
 int str_find_substring(String *str, const char *substr, unsigned start_at);
 
 /**
+ * Replaces any occurence of substr for replacement
+ * @param substr string to replace
+ * @param replacement replacement for substr
+ * @return 1 if it replaces at least one occurence
+*/
+int str_replace(String *wstr, const char *substr, const char *replacement);
+
+/**
  * Transforms all the charcters in the String, one by one,
  * using the given function.
  */

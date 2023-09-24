@@ -143,6 +143,14 @@ wchar_t* wstr_tok(WString *wstr, wchar_t *tokens);
 int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at);
 
 /**
+ * Replaces any occurence of substr for replacement
+ * @param substr string to replace
+ * @param replacement replacement for substr
+ * @return 1 if it replaces at least one occurence
+*/
+int wstr_replace(WString *wstr, const wchar_t *substr, const wchar_t *replacement);
+
+/**
  * Transforms all the charcters in the WString, one by one,
  * using the given function.
  */
