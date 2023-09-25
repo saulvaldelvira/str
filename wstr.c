@@ -245,6 +245,36 @@ wchar_t* wstr_tok(WString *wstr, wchar_t *tokens){
 	return prev_tok;
 }
 
+wchar_t** wstr_split(WString *wstr, wchar_t *delim){
+	if (!wstr || !delim)
+		return NULL;
+	size_t delim_len = wstrnlen(delim, -1);
+	int count = 1;
+	int i = wstr_find_substring(wstr, delim, 0);
+	while (i >= 0){
+		count++;
+		i = wstr_find_substring(wstr, delim, i + delim_len);
+	}
+	count++; // For the NULL element at the end
+	wchar_t **split = malloc(count * sizeof(wchar_t*));
+	wchar_t **ptr = split;
+	int prev_i = 0;
+	i = wstr_find_substring(wstr, delim, 0);
+	while (i >= 0){
+		*ptr = wstr_substring(wstr, prev_i, i);
+		if (**ptr == L'\0')
+			free(*ptr);
+		else
+			ptr++;
+		prev_i = i + delim_len;
+		i = wstr_find_substring(wstr, delim, prev_i);
+	}
+	if ((size_t)prev_i < wstr->length)
+		*ptr = wstr_substring(wstr, prev_i, wstr->length);
+	split[count - 1] = NULL;
+	return split;
+}
+
 int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at){
 	if (!wstr || !substr)
 		return -2;

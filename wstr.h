@@ -135,6 +135,16 @@ size_t wstr_length(WString *wstr);
 wchar_t* wstr_tok(WString *wstr, wchar_t *tokens);
 
 /**
+ * Splits the WString into an array of cwstr, using delim
+ * as a delimiter.
+ * @param wstr the string to split
+ * @param delim the delimiter
+ * @return an array with the string split by delim. 
+ *         The last element is NULL.
+*/
+wchar_t** wstr_split(WString *wstr, wchar_t *delim);
+
+/**
  * Finds the first occurence of substr, starting at index [start_at]
  * @param substr string to search
  * @param start_at index of the WString to start the search

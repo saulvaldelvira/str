@@ -129,6 +129,16 @@ size_t str_length(String *str);
 char* str_tok(String *str, char *tokens);
 
 /**
+ * Splits the String into an array of cstr, using delim
+ * as a delimiter.
+ * @param str the string to split
+ * @param delim the delimiter
+ * @return an array with the string split by delim. 
+ *         The last element is NULL.
+*/
+char** str_split(String *str, char *delim);
+
+/**
  * Finds the first occurence of substr, starting at index [start_at]
  * @param substr string to search
  * @param start_at index of the String to start the search

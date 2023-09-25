@@ -230,6 +230,36 @@ char* str_tok(String *str, char *tokens){
 	return prev_tok;
 }
 
+char** str_split(String *str, char *delim){
+	if (!str || !delim)
+		return NULL;
+	size_t delim_len = strlen(delim);
+	int count = 1;
+	int i = str_find_substring(str, delim, 0);
+	while (i >= 0){
+		count++;
+		i = str_find_substring(str, delim, i + delim_len);
+	}
+	count++; // For the NULL element at the end
+	char **split = malloc(count * sizeof(char*));
+	char **ptr = split;
+	int prev_i = 0;
+	i = str_find_substring(str, delim, 0);
+	while (i >= 0){
+		*ptr = str_substring(str, prev_i, i);
+		if (**ptr == '\0')
+			free(*ptr);
+		else
+			ptr++;
+		prev_i = i + delim_len;
+		i = str_find_substring(str, delim, prev_i);
+	}
+	if ((size_t)prev_i < str->length)
+		*ptr = str_substring(str, prev_i, str->length);
+	split[count - 1] = NULL;
+	return split;
+}
+
 int str_find_substring(String *str, const char *substr, unsigned start_at){
         if (!str || !substr)
                 return -2;
