@@ -280,14 +280,15 @@ int str_find_substring(String *str, const char *substr, unsigned start_at){
 
 int str_replace(String *str, const char *substr, const char *replacement){
 	size_t substr_len = strlen(substr);
+	size_t replacement_len = strlen(replacement);
 	int i = 0;
 	i = str_find_substring(str, substr, i);
 	if (i < 0)
 		return i;
 	while (i >= 0){
 		str_remove_range(str, i, i + substr_len);
-		str_insert_cstr(str, replacement, -1, i);
-		i = str_find_substring(str, substr, i + substr_len);
+		str_insert_cstr(str, replacement, replacement_len, i);
+		i = str_find_substring(str, substr, i + replacement_len);
 	}
 	return 1;
 }

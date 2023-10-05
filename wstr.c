@@ -295,14 +295,15 @@ int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at)
 
 int wstr_replace(WString *wstr, const wchar_t *substr, const wchar_t *replacement){
 	size_t substr_len = wstrnlen(substr, -1);
+	size_t replacement_len = wstrnlen(replacement, -1);
 	int i = 0;
 	i = wstr_find_substring(wstr, substr, i);
 	if (i < 0)
 		return i;
 	while (i >= 0){
 		wstr_remove_range(wstr, i, i + substr_len);
-		wstr_insert_cwstr(wstr, replacement, -1, i);
-		i = wstr_find_substring(wstr, substr, i + substr_len);
+		wstr_insert_cwstr(wstr, replacement, replacement_len, i);
+		i = wstr_find_substring(wstr, substr, i + replacement_len);
 	}
 	return 1;
 }
