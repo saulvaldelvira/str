@@ -9,6 +9,10 @@
 #include <stdarg.h>
 
 #define INITIAL_SIZE 16
+#ifndef GROW_FACTOR
+#define GROW_FACTOR 2
+#endif
+static_assert(GROW_FACTOR > 1);
 
 struct String{
         char    *buffer;
@@ -56,7 +60,7 @@ int str_concat_cstr(String *str, const char *cat, unsigned n){
 		return -1;
 	size_t len = strnlen(cat, n);
 	if (str->buffer_size - str->length < len){
-		size_t new_size = str->buffer_size * 2;
+		size_t new_size = str->buffer_size * GROW_FACTOR;
 		if (new_size - str->length < len)
 			new_size += len;
 		resize_buffer(str, new_size);
@@ -157,7 +161,7 @@ const char* str_get_buffer(String *str){
 	if (!str)
 		return NULL;
 	if (str->length == str->buffer_size)
-		resize_buffer(str, str->buffer_size * 2);
+		resize_buffer(str, str->buffer_size * GROW_FACTOR);
 	str->buffer[str->length] = '\0';
 	return str->buffer;
 }

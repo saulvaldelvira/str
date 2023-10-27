@@ -9,6 +9,10 @@
 #include <stdarg.h>
 
 #define INITIAL_SIZE 16
+#ifndef GROW_FACTOR
+#define GROW_FACTOR 2
+#endif
+static_assert(GROW_FACTOR > 1);
 
 struct WString{
 		wchar_t* buffer;
@@ -60,9 +64,9 @@ void wstr_reserve(WString *wstr, unsigned n){
 
 static inline void resize_if_needed(WString *wstr, size_t size){
 	if (wstr->length + size > wstr->buffer_size){
-		size_t new_size = wstr->buffer_size * 2;
-		while (wstr->length + size > new_size)
-			new_size *= 2;
+		size_t new_size = wstr->buffer_size * GROW_FACTOR;
+		if (wstr->length + size > new_size)
+			new_size += size;
 		resize_buffer(wstr, new_size);
 	}
 }
@@ -151,12 +155,7 @@ int wstr_insert_cwstr(WString *wstr, const wchar_t *insert, unsigned n, unsigned
 	if (index > wstr->length)
 		return -2;
 	size_t len = wstrnlen(insert, n);
-	if (wstr->length + len  > wstr->buffer_size){
-		size_t new_size = wstr->buffer_size * 2;
-		if (wstr->length + len > new_size)
-			new_size += len;
-		resize_buffer(wstr, new_size);
-	}
+	resize_if_needed(wstr, len);
 	memmove(&wstr->buffer[index + len], &wstr->buffer[index], (wstr->length - index) * sizeof(wchar_t));
 	memcpy(&wstr->buffer[index], insert, len * sizeof(wchar_t));
 	wstr->length += len;
@@ -180,7 +179,7 @@ const wchar_t* wstr_get_buffer(WString *wstr){
 	if (!wstr)
 		return NULL;
 	if (wstr->length == wstr->buffer_size)
-		resize_buffer(wstr, wstr->buffer_size * 2);
+		resize_buffer(wstr, wstr->buffer_size * GROW_FACTOR);
 	wstr->buffer[wstr->length] = '\0';
 	return wstr->buffer;
 }
