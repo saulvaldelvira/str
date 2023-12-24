@@ -153,10 +153,10 @@ wchar_t** wstr_split(WString *wstr, wchar_t *delim);
 int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at);
 
 /**
- * Replaces any occurence of substr for replacement
+ * Replaces any occurence of substr with replacement
  * @param substr string to replace
  * @param replacement replacement for substr
- * @return 1 if it replaces at least one occurence
+ * @return the number of matches 
 */
 int wstr_replace(WString *wstr, const wchar_t *substr, const wchar_t *replacement);
 

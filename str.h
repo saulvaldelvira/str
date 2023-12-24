@@ -147,10 +147,10 @@ char** str_split(String *str, char *delim);
 int str_find_substring(String *str, const char *substr, unsigned start_at);
 
 /**
- * Replaces any occurence of substr for replacement
+ * Replaces any occurence of substr with replacement
  * @param substr string to replace
  * @param replacement replacement for substr
- * @return 1 if it replaces at least one occurence
+ * @return the number of matches
 */
 int str_replace(String *wstr, const char *substr, const char *replacement);
 
