@@ -117,6 +117,8 @@ wchar_t* wstr_substring(WString *wstr, unsigned start, unsigned end);
  */
 WString* wstr_dup(WString *wstr);
 
+int wstr_cmp_cwstr(const WString *wstr, const wchar_t *cwstr);
+
 /**
  * Returns the length of the WString
  */

@@ -343,6 +343,16 @@ wchar_t* wstr_cloned_cwstr(WString *wstr) {
         return result;
 }
 
+int wstr_cmp_cwstr(const WString *wstr, const wchar_t *cwstr) {
+        if (!wstr || !cwstr) return 0;
+        for (size_t i = 0; i < wstr->length; i++) {
+                int c = wstr->buffer[i] - cwstr[i];
+                if (c != 0)
+                        return c;
+        }
+        return 0;
+}
+
 void wstr_clear(WString *wstr){
 	if (wstr)
 		wstr->length = 0;
