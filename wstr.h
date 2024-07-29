@@ -3,6 +3,7 @@
  * Author: Saúl Valdelvira (2023)
  */
 #pragma once
+#include <wchar.h>
 #ifndef WSTR_H
 #define WSTR_H
 
@@ -139,7 +140,7 @@ wchar_t* wstr_tok(WString *wstr, wchar_t *tokens);
  * as a delimiter.
  * @param wstr the string to split
  * @param delim the delimiter
- * @return an array with the string split by delim. 
+ * @return an array with the string split by delim.
  *         The last element is NULL.
 */
 wchar_t** wstr_split(WString *wstr, wchar_t *delim);
@@ -156,7 +157,7 @@ int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at)
  * Replaces any occurence of substr with replacement
  * @param substr string to replace
  * @param replacement replacement for substr
- * @return the number of matches 
+ * @return the number of matches
 */
 int wstr_replace(WString *wstr, const wchar_t *substr, const wchar_t *replacement);
 
@@ -170,6 +171,19 @@ int wstr_transform(WString *wstr, wchar_t(*func)(wchar_t));
  * Shrinks the given string to fit it's content
  */
 void wstr_shrink(WString *wstr);
+
+/**
+ * Converts the given WString into a regular wchar_t*
+ * - The resulting string is properly NULL terminated
+ * - The original WString is not usable anymore
+ * */
+wchar_t* wstr_into_cwstr(WString *wstr);
+
+/**
+ * Clones the given WString into a regular wchar_t*
+ * - The resulting string is properly NULL terminated
+ * */
+wchar_t* wstr_cloned_cwstr(WString *wstr);
 
 /**
  * Clears the WString, without shrinking or freeing the buffer.

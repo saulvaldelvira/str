@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <string.h> // memcpy
 #include <stdarg.h>
+#include <time.h>
+#include <wchar.h>
 
 #define INITIAL_SIZE 16
 #ifndef GROW_FACTOR
@@ -20,7 +22,7 @@ struct WString{
 		size_t   buffer_size;
 };
 
-static void resize_buffer(WString *wstr, size_t new_size){
+static void __resize_buffer(WString *wstr, size_t new_size){
 	if (new_size == 0)
 		new_size = 1;
 	wstr->buffer_size = new_size;
@@ -36,12 +38,12 @@ WString* wstr_init(unsigned initial_size){
 	WString *wstr = malloc(sizeof(*wstr));
 	assert(wstr);
 	wstr->buffer = NULL;
-	resize_buffer(wstr, initial_size);
+	__resize_buffer(wstr, initial_size);
 	wstr->length = 0;
 	return wstr;
 }
 
-static size_t wstrnlen(const wchar_t *str, unsigned n){
+static size_t __wstrnlen(const wchar_t *str, unsigned n){
 	size_t len = 0;
 	while (*str++ != L'\0' && n-- > 0)
 		len++;
@@ -51,7 +53,7 @@ static size_t wstrnlen(const wchar_t *str, unsigned n){
 WString* wstr_from_cwstr(const wchar_t *src, unsigned n){
 	if (!src)
 		return NULL;
-	size_t len = wstrnlen(src, n);
+	size_t len = __wstrnlen(src, n);
 	WString *wstr = wstr_init(len);
 	wstr_concat_cwstr(wstr, src, n);
 	return wstr;
@@ -59,7 +61,7 @@ WString* wstr_from_cwstr(const wchar_t *src, unsigned n){
 
 void wstr_reserve(WString *wstr, unsigned n){
 	if (wstr && wstr->buffer_size < n)
-		resize_buffer(wstr, n);
+		__resize_buffer(wstr, n);
 }
 
 static inline void resize_if_needed(WString *wstr, size_t size){
@@ -67,14 +69,14 @@ static inline void resize_if_needed(WString *wstr, size_t size){
 		size_t new_size = wstr->buffer_size * GROW_FACTOR;
 		if (wstr->length + size > new_size)
 			new_size += size;
-		resize_buffer(wstr, new_size);
+		__resize_buffer(wstr, new_size);
 	}
 }
 
 int wstr_concat_cwstr(WString *wstr, const wchar_t *cat, unsigned n){
 	if (!wstr || !cat)
 		return -1;
-	size_t len = wstrnlen(cat, n);
+	size_t len = __wstrnlen(cat, n);
 	resize_if_needed(wstr, len);
 	memcpy(&wstr->buffer[wstr->length], cat, len * sizeof(wchar_t));
 	wstr->length += len;
@@ -154,7 +156,7 @@ int wstr_insert_cwstr(WString *wstr, const wchar_t *insert, unsigned n, unsigned
 		return -1;
 	if (index > wstr->length)
 		return -2;
-	size_t len = wstrnlen(insert, n);
+	size_t len = __wstrnlen(insert, n);
 	resize_if_needed(wstr, len);
 	memmove(&wstr->buffer[index + len], &wstr->buffer[index], (wstr->length - index) * sizeof(wchar_t));
 	memcpy(&wstr->buffer[index], insert, len * sizeof(wchar_t));
@@ -175,12 +177,17 @@ wchar_t* wstr_to_cwstr(WString *wstr){
 	return cwstr;
 }
 
+static void __add_null_term(WString *wstr) {
+        assert(wstr);
+	if (wstr->length == wstr->buffer_size)
+		__resize_buffer(wstr, wstr->buffer_size * GROW_FACTOR);
+	wstr->buffer[wstr->length] = '\0';
+}
+
 const wchar_t* wstr_get_buffer(WString *wstr){
 	if (!wstr)
 		return NULL;
-	if (wstr->length == wstr->buffer_size)
-		resize_buffer(wstr, wstr->buffer_size * GROW_FACTOR);
-	wstr->buffer[wstr->length] = '\0';
+        __add_null_term(wstr);
 	return wstr->buffer;
 }
 
@@ -247,7 +254,7 @@ wchar_t* wstr_tok(WString *wstr, wchar_t *tokens){
 wchar_t** wstr_split(WString *wstr, wchar_t *delim){
 	if (!wstr || !delim)
 		return NULL;
-	size_t delim_len = wstrnlen(delim, -1);
+	size_t delim_len = __wstrnlen(delim, -1);
 	int count = 1;
 	int i = wstr_find_substring(wstr, delim, 0);
 	while (i >= 0){
@@ -293,8 +300,8 @@ int wstr_find_substring(WString *wstr, const wchar_t *substr, unsigned start_at)
 }
 
 int wstr_replace(WString *wstr, const wchar_t *substr, const wchar_t *replacement){
-	size_t substr_len = wstrnlen(substr, -1);
-	size_t replacement_len = wstrnlen(replacement, -1);
+	size_t substr_len = __wstrnlen(substr, -1);
+	size_t replacement_len = __wstrnlen(replacement, -1);
         int n_replacements = 0;
 	int i = wstr_find_substring(wstr, substr, 0);
         while (i >= 0){
@@ -316,7 +323,24 @@ int wstr_transform(WString *wstr, wchar_t(*func)(wchar_t)){
 
 void wstr_shrink(WString *wstr){
 	if (wstr && wstr->buffer_size > wstr->length)
-		resize_buffer(wstr, wstr->length);
+		__resize_buffer(wstr, wstr->length);
+}
+
+wchar_t* wstr_into_cwstr(WString *wstr) {
+        if (!wstr) return NULL;
+        __add_null_term(wstr);
+        wstr_shrink(wstr);
+        wchar_t *buf = wstr->buffer;
+        wstr->buffer = NULL;
+        return buf;
+}
+
+wchar_t* wstr_cloned_cwstr(WString *wstr) {
+        if (!wstr) return NULL;
+        wchar_t *result = malloc((wstr->length + 1) * sizeof(wchar_t));
+        memcpy(result, wstr->buffer, wstr->length * sizeof(wchar_t));
+        result[wstr->length] = L'\0';
+        return result;
 }
 
 void wstr_clear(WString *wstr){
