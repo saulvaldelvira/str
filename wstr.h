@@ -26,6 +26,7 @@ WString* wstr_init(unsigned initial_size);
  * @param n max length of src
  */
 WString* wstr_from_cwstr(const wchar_t *src, unsigned n);
+WString* wstr_from_cstr(const char *src, unsigned n);
 
 /**
  * Reserves space in the WString for n characters
@@ -88,6 +89,7 @@ int wstr_set_at(WString *wstr, unsigned index, wchar_t c);
  * @param n, max length of the insert string
  */
 int wstr_insert_cwstr(WString *wstr, const wchar_t *insert, unsigned n, unsigned index);
+int wstr_insert_cstr(WString *wstr, const char *insert, unsigned n, unsigned index);
 
 /**
  * Inserts the given wchar at the given index.

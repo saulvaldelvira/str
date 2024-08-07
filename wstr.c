@@ -59,6 +59,15 @@ WString* wstr_from_cwstr(const wchar_t *src, unsigned n){
 	return wstr;
 }
 
+WString* wstr_from_cstr(const char *src, unsigned n){
+	if (!src)
+		return NULL;
+	size_t len = strnlen(src, n);
+	WString *wstr = wstr_init(len);
+	wstr_concat_cstr(wstr, src, n);
+	return wstr;
+}
+
 void wstr_reserve(WString *wstr, unsigned n){
 	if (wstr && wstr->buffer_size < n)
 		__resize_buffer(wstr, n);
@@ -160,6 +169,19 @@ int wstr_insert_cwstr(WString *wstr, const wchar_t *insert, unsigned n, unsigned
 	resize_if_needed(wstr, len);
 	memmove(&wstr->buffer[index + len], &wstr->buffer[index], (wstr->length - index) * sizeof(wchar_t));
 	memcpy(&wstr->buffer[index], insert, len * sizeof(wchar_t));
+	wstr->length += len;
+	return 1;
+}
+
+int wstr_insert_cstr(WString *wstr, const char *insert, unsigned n, unsigned index){
+	if (!wstr || !insert)
+		return -1;
+	if (index > wstr->length)
+		return -2;
+	size_t len = strnlen(insert, n);
+	resize_if_needed(wstr, len);
+	memmove(&wstr->buffer[index + len], &wstr->buffer[index], (wstr->length - index) * sizeof(char));
+	memcpy(&wstr->buffer[index], insert, len * sizeof(char));
 	wstr->length += len;
 	return 1;
 }
