@@ -7,12 +7,13 @@
 #include <assert.h>
 #include <string.h> // memcpy, strnlen
 #include <stdarg.h>
+#include "util.h"
 
 #define INITIAL_SIZE 16
 #ifndef GROW_FACTOR
 #define GROW_FACTOR 2
 #endif
-static_assert(GROW_FACTOR > 1);
+static_assert(GROW_FACTOR > 1, "");
 
 struct String{
         char    *buffer;
@@ -28,17 +29,22 @@ static void resize_buffer(String *str, size_t new_size){
 	assert(str->buffer);
 }
 
-String* str_empty(void){
-        return str_init(INITIAL_SIZE);
-}
-
-String* str_init(unsigned initial_size){
+static INLINE
+String* __str_init(unsigned int initial_size) {
 	String *str = malloc(sizeof(*str));
 	assert(str);
 	str->buffer = NULL;
 	resize_buffer(str, initial_size);
 	str->length = 0;
 	return str;
+}
+
+String* str_empty(void){
+        return __str_init(INITIAL_SIZE);
+}
+
+String* str_init(unsigned int initial_size){
+        return __str_init(initial_size);
 }
 
 String* str_from_cstr(const char *src, unsigned n){

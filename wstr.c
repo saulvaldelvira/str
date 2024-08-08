@@ -9,12 +9,13 @@
 #include <stdarg.h>
 #include <time.h>
 #include <wchar.h>
+#include "util.h"
 
 #define INITIAL_SIZE 16
 #ifndef GROW_FACTOR
 #define GROW_FACTOR 2
 #endif
-static_assert(GROW_FACTOR > 1);
+static_assert(GROW_FACTOR > 1, "");
 
 struct WString{
 		wchar_t* buffer;
@@ -30,17 +31,22 @@ static void __resize_buffer(WString *wstr, size_t new_size){
 	assert(wstr->buffer);
 }
 
-WString* wstr_empty(void){
-	return wstr_init(INITIAL_SIZE);
-}
-
-WString* wstr_init(unsigned initial_size){
+static INLINE
+WString* __wstr_init(unsigned int initial_size) {
 	WString *wstr = malloc(sizeof(*wstr));
 	assert(wstr);
 	wstr->buffer = NULL;
 	__resize_buffer(wstr, initial_size);
 	wstr->length = 0;
 	return wstr;
+}
+
+WString* wstr_empty(void){
+	return __wstr_init(INITIAL_SIZE);
+}
+
+WString* wstr_init(unsigned initial_size){
+	return __wstr_init(initial_size);
 }
 
 static size_t __wstrnlen(const wchar_t *str, unsigned n){
