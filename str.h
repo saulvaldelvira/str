@@ -133,7 +133,7 @@ char* str_tok(String *str, char *tokens);
  * as a delimiter.
  * @param str the string to split
  * @param delim the delimiter
- * @return an array with the string split by delim. 
+ * @return an array with the string split by delim.
  *         The last element is NULL.
 */
 char** str_split(String *str, char *delim);
@@ -173,7 +173,9 @@ void str_clear(String *str);
 /**
  * Frees all the memory allocated for the string
  */
-void str_free(String *str);
+void str_free(String *str, ...);
+
+#define str_free(...) str_free(__VA_ARGS__, NULL)
 
 /**
  * Frees multiple Strings at once

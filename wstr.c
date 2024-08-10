@@ -150,7 +150,7 @@ int wstr_remove_range(WString *wstr, unsigned start, unsigned end){
 	return 1;
 }
 
-wchar_t wstr_get_at(WString *wstr, unsigned index){
+wchar_t wstr_get_at(const WString *wstr, unsigned index){
 	if (!wstr)
 		return -1;
 	else if (index >= wstr->length)
@@ -196,7 +196,7 @@ int wstr_insert(WString *wstr, wchar_t c, unsigned index){
 	return wstr_insert_cwstr(wstr, (wchar_t[]){c, L'\0'}, 2, index);
 }
 
-wchar_t* wstr_to_cwstr(WString *wstr){
+wchar_t* wstr_to_cwstr(const WString *wstr){
 	if (!wstr)
 		return NULL;
 	wchar_t *cwstr = malloc((wstr->length + 1) * sizeof(wchar_t));
@@ -241,7 +241,7 @@ WString* wstr_dup(WString *wstr){
 	return dup;
 }
 
-size_t wstr_length(WString *wstr){
+size_t wstr_length(const WString *wstr){
 	if (!wstr)
 		return 0;
 	return wstr->length;
@@ -386,11 +386,23 @@ void wstr_clear(WString *wstr){
 		wstr->length = 0;
 }
 
-void wstr_free(WString *wstr){
+static INLINE void __wstr__free(WString *wstr) {
 	if (wstr){
 		free(wstr->buffer);
 		free(wstr);
 	}
+}
+
+void (wstr_free)(WString *wstr, ...){
+        if (!wstr)
+                return;
+        va_list arg;
+        va_start(arg, wstr);
+        do {
+                __wstr__free(wstr);
+                wstr = va_arg(arg, WString*);
+        } while (wstr);
+        va_end(arg);
 }
 
 void wstr_free_all(unsigned int n, ...){

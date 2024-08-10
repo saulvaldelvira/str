@@ -77,7 +77,7 @@ int wstr_remove_range(WString *wstr, unsigned start, unsigned end);
 /**
  * Gets the character at the given index
  */
-wchar_t wstr_get_at(WString *wstr, unsigned index);
+wchar_t wstr_get_at(const WString *wstr, unsigned index);
 
 /**
  * Sets the character at the given index
@@ -101,7 +101,7 @@ int wstr_insert(WString *wstr, wchar_t c, unsigned index);
  * Returns a cwtring copy of the given WString.
  * @note The cwstring is allocated using malloc
  */
-wchar_t* wstr_to_cwstr(WString *wstr);
+wchar_t* wstr_to_cwstr(const WString *wstr);
 
 /**
  * Returns a pointer to the internal buffer of the WString.
@@ -124,7 +124,7 @@ int wstr_cmp_cwstr(const WString *wstr, const wchar_t *cwstr);
 /**
  * Returns the length of the WString
  */
-size_t wstr_length(WString *wstr);
+size_t wstr_length(const WString *wstr);
 
 /**
  * Splits the WString into substrings, using the characters
@@ -197,7 +197,9 @@ void wstr_clear(WString *wstr);
 /**
  * Frees all the memory allocated for the string
  */
-void wstr_free(WString *wstr);
+void wstr_free(WString *wstr, ...);
+
+#define wstr_free(...) wstr_free(__VA_ARGS__, NULL)
 
 /**
  * Frees multiple WStrings at once

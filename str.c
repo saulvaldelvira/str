@@ -312,11 +312,23 @@ void str_clear(String *str){
 		str->length = 0;
 }
 
-void str_free(String *str){
+static INLINE void __str__free(String *str) {
 	if (str){
 		free(str->buffer);
 		free(str);
 	}
+}
+
+void (str_free)(String *str, ...){
+        if (!str)
+                return;
+        va_list arg;
+        va_start(arg, str);
+        do {
+                __str__free(str);
+                str = va_arg(arg, String*);
+        } while (str);
+        va_end(arg);
 }
 
 void str_free_all(unsigned int n, ...){
