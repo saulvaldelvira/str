@@ -24,35 +24,37 @@ struct WString{
 };
 
 static void __resize_buffer(WString *wstr, size_t new_size){
-	if (new_size == 0)
-		new_size = 1;
+        assert(wstr);
+        if (new_size == 0)
+                new_size = INITIAL_SIZE;
 	wstr->buffer_size = new_size;
 	wstr->buffer = realloc(wstr->buffer, wstr->buffer_size * sizeof(wchar_t));
 	assert(wstr->buffer);
 }
 
-static INLINE
-WString* __wstr_init(unsigned int initial_size) {
-	WString *wstr = malloc(sizeof(*wstr));
-	assert(wstr);
-	wstr->buffer = NULL;
-	__resize_buffer(wstr, initial_size);
-	wstr->length = 0;
+#define __wstr_init(initial_size) \
+	WString *wstr = malloc(sizeof(WString)); \
+	assert(wstr); \
+        memset(wstr, 0, sizeof(WString)); \
+	__resize_buffer(wstr, initial_size); \
 	return wstr;
-}
 
 WString* wstr_empty(void){
-	return __wstr_init(INITIAL_SIZE);
+        __wstr_init(INITIAL_SIZE);
 }
 
 WString* wstr_init(unsigned initial_size){
-	return __wstr_init(initial_size);
+	__wstr_init(initial_size);
 }
 
 static size_t __wstrnlen(const wchar_t *str, unsigned n){
+        assert(str);
 	size_t len = 0;
-	while (*str++ != L'\0' && n-- > 0)
-		len++;
+        while (*str != L'\0' && n > 0) {
+                len++;
+                str++;
+                n--;
+        }
 	return len;
 }
 
