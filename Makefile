@@ -1,19 +1,29 @@
-.PHONY: clean libs install uninstall doxygen
-CC = gcc
+.PHONY: default clean libs install uninstall doxygen
+
+CC := cc
 CCFLAGS = -Wall -Wextra -Werror -pedantic -g -O3 -fPIC
 
 CFILES = str.c wstr.c
 HFILES = str.h wstr.h
 OFILES = $(patsubst %.c, %.o, $(CFILES))
+LIBFILES = libstr.so libstr-static.a
 
 AR = ar
 ARFLAGS = rcs
 
 INSTALL_PATH ?= /usr/local
 
-libs: $(OFILES) $(HFILES)
+default: libs
+
+libs: $(LIBFILES)
+
+$(LIBFILES): $(OFILES) $(HFILES)
+	@ echo " => libstr.so"
 	@ $(CC) $(CCFLAGS) -shared -o libstr.so $(OFILES)
+
+	@ echo " => libstr-static.so"
 	@ $(AR) $(ARFLAGS) libstr-static.a $(OFILES)
+
 
 install: libs
 	  install -d $(INSTALL_PATH)/lib
@@ -34,8 +44,8 @@ doxygen: ./doxygen/
 	/** @mainpage \n \
 	    @verbinclude README \n \
 	*//**\
-	   @file str.h  String definition. \n \
-	   @file wstr.h  WString definition. \n */" > ./doxygen/doc.doxy
+	   @file str.h  string_t definition. \n \
+	   @file wstr.h  wstring_t definition. \n */" > ./doxygen/doc.doxy
 	@ doxygen .doxyfile
 	@ rm -f ./doxygen/doc.doxy
 
@@ -43,7 +53,8 @@ doxygen: ./doxygen/
 	@ mkdir $@
 
 .c.o:
-	$(CC) $(CCFLAGS) -c -o $@ $<
+	@ echo " CC $@"
+	@ $(CC) $(CCFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf *.o doxygen
+	@ rm -rf *.o doxygen  $(LIBFILES)

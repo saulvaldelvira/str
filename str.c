@@ -1,5 +1,5 @@
 /*
- * str.c - String implementation.
+ * str.c - string_t implementation.
  * Author: Saúl Valdelvira (2023)
  */
 #include "str.h"
@@ -15,13 +15,13 @@
 #endif
 static_assert(GROW_FACTOR > 1, "");
 
-struct String{
+struct string {
         char    *buffer;
         size_t  length;
         size_t  buffer_size;
 };
 
-static void resize_buffer(String *str, size_t new_size){
+static void resize_buffer(string_t *str, size_t new_size){
 	if (new_size == 0)
 		new_size = 1;
 	str->buffer_size = new_size;
@@ -30,8 +30,8 @@ static void resize_buffer(String *str, size_t new_size){
 }
 
 static INLINE
-String* __str_init(unsigned int initial_size) {
-	String *str = malloc(sizeof(*str));
+string_t* __str_init(unsigned int initial_size) {
+	string_t *str = malloc(sizeof(*str));
 	assert(str);
 	str->buffer = NULL;
 	resize_buffer(str, initial_size);
@@ -39,29 +39,29 @@ String* __str_init(unsigned int initial_size) {
 	return str;
 }
 
-String* str_empty(void){
+string_t* str_empty(void){
         return __str_init(INITIAL_SIZE);
 }
 
-String* str_init(unsigned int initial_size){
+string_t* str_init(unsigned int initial_size){
         return __str_init(initial_size);
 }
 
-String* str_from_cstr(const char *src, unsigned n){
+string_t* str_from_cstr(const char *src, unsigned n){
 	if (!src)
 		return NULL;
 	size_t len = strnlen(src, n);
-	String *str = str_init(len);
+	string_t *str = str_init(len);
 	str_concat_cstr(str, src, n);
 	return str;
 }
 
-void str_reserve(String *str, unsigned n){
+void str_reserve(string_t *str, unsigned n){
 	if (str && str->buffer_size < n)
 		resize_buffer(str, n);
 }
 
-int str_concat_cstr(String *str, const char *cat, unsigned n){
+int str_concat_cstr(string_t *str, const char *cat, unsigned n){
 	if (!str || !cat)
 		return -1;
 	size_t len = strnlen(cat, n);
@@ -76,23 +76,23 @@ int str_concat_cstr(String *str, const char *cat, unsigned n){
 	return 1;
 }
 
-int str_concat_str(String *str, String *cat){
+int str_concat_str(string_t *str, string_t *cat){
 	if (!str || !cat)
 		return -1;
 	return str_concat_cstr(str, cat->buffer, cat->length);
 }
 
-int str_push_char(String *str, char c){
+int str_push_char(string_t *str, char c){
 	return str_concat_cstr(str, (char[]){c,'\0'}, 2);
 }
 
-int str_pop(String *str){
+int str_pop(string_t *str){
 	if (!str)
 		return -1;
 	return str_remove_at(str, str->length - 1);
 }
 
-int str_remove_at(String *str, unsigned index){
+int str_remove_at(string_t *str, unsigned index){
 	if (!str)
 		return -1;
 	if (index >= str->length)
@@ -103,7 +103,7 @@ int str_remove_at(String *str, unsigned index){
 	return 1;
 }
 
-int str_remove_range(String *str, unsigned start, unsigned end){
+int str_remove_range(string_t *str, unsigned start, unsigned end){
 	if (!str)
 		return -1;
 	if (end < start)
@@ -116,7 +116,7 @@ int str_remove_range(String *str, unsigned start, unsigned end){
 	return 1;
 }
 
-char str_get_at(String *str, unsigned index){
+char str_get_at(string_t *str, unsigned index){
 	if (!str)
 		return -1;
 	else if (index >= str->length)
@@ -124,7 +124,7 @@ char str_get_at(String *str, unsigned index){
 	return str->buffer[index];
 }
 
-int str_set_at(String *str, unsigned index, char c){
+int str_set_at(string_t *str, unsigned index, char c){
 	if (!str)
 		return -1;
 	else if (index >= str->length)
@@ -132,7 +132,7 @@ int str_set_at(String *str, unsigned index, char c){
 	return str->buffer[index] = c;
 }
 
-int str_insert_cstr(String *str, const char *insert, unsigned n, unsigned index){
+int str_insert_cstr(string_t *str, const char *insert, unsigned n, unsigned index){
 	if (!str || !insert)
 		return -1;
 	if (index > str->length)
@@ -150,11 +150,11 @@ int str_insert_cstr(String *str, const char *insert, unsigned n, unsigned index)
 	return 1;
 }
 
-int str_insert(String *str, char c, unsigned index){
+int str_insert(string_t *str, char c, unsigned index){
 	return str_insert_cstr(str, (char[]){c, '\0'}, 2, index);
 }
 
-char* str_to_cstr(String *str){
+char* str_to_cstr(string_t *str){
 	if (!str)
 		return NULL;
 	char *cstr = malloc(str->length + 1);
@@ -163,7 +163,7 @@ char* str_to_cstr(String *str){
 	return cstr;
 }
 
-const char* str_get_buffer(String *str){
+const char* str_get_buffer(string_t *str){
 	if (!str)
 		return NULL;
 	if (str->length == str->buffer_size)
@@ -172,7 +172,7 @@ const char* str_get_buffer(String *str){
 	return str->buffer;
 }
 
-char* str_substring(String *str, unsigned start, unsigned end){
+char* str_substring(string_t *str, unsigned start, unsigned end){
 	if (!str || end < start)
 		return NULL;
 	if (end > str->length)
@@ -185,7 +185,7 @@ char* str_substring(String *str, unsigned start, unsigned end){
 	return substring;
 }
 
-int str_transform(String *str, char(*func)(char)){
+int str_transform(string_t *str, char(*func)(char)){
 	if (!str || !func)
 		return -1;
 	for (size_t i = 0; i < str->length; i++)
@@ -193,25 +193,25 @@ int str_transform(String *str, char(*func)(char)){
 	return 1;
 }
 
-String* str_dup(String *str){
+string_t* str_dup(string_t *str){
 	if (!str)
 		return NULL;
-	String *dup = str_init(str->length);
+	string_t *dup = str_init(str->length);
 	memcpy(dup->buffer, str->buffer, str->length * sizeof(char));
         dup->length = str->length;
 	return dup;
 }
 
-size_t str_length(String *str){
+size_t str_length(string_t *str){
 	if (!str)
 		return 0;
 	return str->length;
 }
 
-char* str_tok(String *str, char *tokens){
+char* str_tok(string_t *str, char *tokens){
 	static char *prev_tok = NULL;
 	static size_t pos = 0;
-	static String *curr_str = NULL;
+	static string_t *curr_str = NULL;
 	free(prev_tok);
 	prev_tok = NULL;
 	if (str != NULL){
@@ -240,7 +240,7 @@ char* str_tok(String *str, char *tokens){
 	return prev_tok;
 }
 
-char** str_split(String *str, char *delim){
+char** str_split(string_t *str, char *delim){
 	if (!str || !delim)
 		return NULL;
 	size_t delim_len = strlen(delim);
@@ -270,7 +270,7 @@ char** str_split(String *str, char *delim){
 	return split;
 }
 
-int str_find_substring(String *str, const char *substr, unsigned start_at){
+int str_find_substring(string_t *str, const char *substr, unsigned start_at){
         if (!str || !substr)
                 return -2;
         if (start_at >= str->length)
@@ -288,7 +288,7 @@ int str_find_substring(String *str, const char *substr, unsigned start_at){
         return -1;
 }
 
-int str_replace(String *str, const char *substr, const char *replacement){
+int str_replace(string_t *str, const char *substr, const char *replacement){
 	size_t substr_len = strlen(substr);
 	size_t replacement_len = strlen(replacement);
         int n_replacements = 0;
@@ -302,31 +302,31 @@ int str_replace(String *str, const char *substr, const char *replacement){
 	return n_replacements;
 }
 
-void str_shrink(String *str){
+void str_shrink(string_t *str){
 	if (str && str->buffer_size > str->length)
 		resize_buffer(str, str->length);
 }
 
-void str_clear(String *str){
+void str_clear(string_t *str){
 	if (str)
 		str->length = 0;
 }
 
-static INLINE void __str__free(String *str) {
+static INLINE void __str__free(string_t *str) {
 	if (str){
 		free(str->buffer);
 		free(str);
 	}
 }
 
-void (str_free)(String *str, ...){
+void (str_free)(string_t *str, ...){
         if (!str)
                 return;
         va_list arg;
         va_start(arg, str);
         do {
                 __str__free(str);
-                str = va_arg(arg, String*);
+                str = va_arg(arg, string_t*);
         } while (str);
         va_end(arg);
 }
@@ -335,7 +335,7 @@ void str_free_all(unsigned int n, ...){
 	va_list arg;
 	va_start(arg, n);
 	while (n-- > 0){
-		String *str = va_arg(arg, String*);
+		string_t *str = va_arg(arg, string_t*);
 		str_free(str);
 	}
 	va_end(arg);
