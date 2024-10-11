@@ -8,6 +8,7 @@
 #include <string.h> // memcpy, strnlen
 #include <stdarg.h>
 #include "util.h"
+#include <stdbool.h>
 
 #define INITIAL_SIZE 16
 #ifndef GROW_FACTOR
@@ -92,22 +93,42 @@ int str_pop(string_t *str){
 	return str_remove_at(str, str->length - 1);
 }
 
-int str_remove_at(string_t *str, unsigned index){
-	if (!str)
-		return -1;
-	if (index >= str->length)
-		return -2;
-	if (index < str->length - 1)
-		memcpy(&str->buffer[index], &str->buffer[index + 1], (str->length - index - 1) * sizeof(char));
-	str->length--;
-	return 1;
+static bool __convert_index_utf8(string_t *str, unsigned *index) {
+        size_t i = 0;
+        size_t j = 0;
+        while (j < *index) {
+                if (i >= str->length) {
+                        return false;
+                }
+                if ((str->buffer[i] & 0xC0) != 0x80)
+			j++;
+		i++;
+        }
+        *index = i;
+        return true;
 }
 
-int str_remove_range(string_t *str, unsigned start, unsigned end){
+static bool __utf8_length(string_t *str) {
+        size_t i = 0;
+        size_t j = 0;
+        while (i < str->length) {
+                if ((str->buffer[i] & 0xC0) != 0x80)
+			j++;
+		i++;
+        }
+        return j;
+}
+
+INLINE
+int str_remove_at(string_t *str, unsigned index){
+        return str_remove_range(str, index, index + 1);
+}
+
+int __remove_byte_range(string_t *str, unsigned start, unsigned end){
 	if (!str)
 		return -1;
 	if (end < start)
-		return -2;
+		return -3;
 	if (end > str->length)
 		end = str->length;
 	size_t len = str->length - end;
@@ -116,38 +137,72 @@ int str_remove_range(string_t *str, unsigned start, unsigned end){
 	return 1;
 }
 
-char str_get_at(string_t *str, unsigned index){
+int str_remove_range(string_t *str, unsigned start, unsigned end){
+	if (!str)
+		return -1;
+        if (!__convert_index_utf8(str, &start)
+           || !__convert_index_utf8(str, &end))
+                return -2;
+        return __remove_byte_range(str, start, end);
+}
+
+wchar_t str_get_at(string_t *str, unsigned index){
 	if (!str)
 		return -1;
 	else if (index >= str->length)
 		return -2;
-	return str->buffer[index];
+
+        unsigned start = index;
+        unsigned end = index + 1;
+
+        if (!__convert_index_utf8(str, &start)
+           || !__convert_index_utf8(str, &end))
+                return -2;
+
+        wchar_t c;
+
+        if ( mbtowc(&c, &str->buffer[index], end - start) <= 0 ) {
+                return -1;
+        }
+
+	return c;
 }
 
-int str_set_at(string_t *str, unsigned index, char c){
-	if (!str)
-		return -1;
-	else if (index >= str->length)
-		return -2;
-	return str->buffer[index] = c;
+int str_set_at(string_t *str, unsigned index, wchar_t c){
+        char mbc[MB_CUR_MAX];
+        int len = wctomb(mbc, c);
+
+        return str_insert_cstr(str, mbc, len, index);
 }
 
-int str_insert_cstr(string_t *str, const char *insert, unsigned n, unsigned index){
+int __insert_byte_range(string_t *str, const char *insert, unsigned n, unsigned start){
 	if (!str || !insert)
 		return -1;
-	if (index > str->length)
-		return -2;
+
 	size_t len = strnlen(insert, n);
-	if (str->length + len  > str->buffer_size){
+        unsigned end = start + len;
+
+	if (start > str->length)
+		return -3;
+
+	if (str->length + len > str->buffer_size){
 		size_t new_size = str->buffer_size * 2;
 		if (str->length + len > new_size)
 			new_size += len;
 		resize_buffer(str, new_size);
 	}
-	memmove(&str->buffer[index + len], &str->buffer[index], (str->length - index) * sizeof(char));
-	memcpy(&str->buffer[index], insert, len * sizeof(char));
+	memmove(&str->buffer[start + end], &str->buffer[start], (str->length - start) * sizeof(char));
+	memcpy(&str->buffer[start], insert, len * sizeof(char));
 	str->length += len;
 	return 1;
+}
+
+int str_insert_cstr(string_t *str, const char *insert, unsigned n, unsigned index){
+	if (!str)
+		return -1;
+        if (!__convert_index_utf8(str, &index))
+                return -2;
+        return __insert_byte_range(str, insert, n, index);
 }
 
 int str_insert(string_t *str, char c, unsigned index){
@@ -172,14 +227,41 @@ const char* str_get_buffer(string_t *str){
 	return str->buffer;
 }
 
+const char* str_get_buffer_at(string_t *str, unsigned i){
+        if (!str)
+                return NULL;
+        if (!__convert_index_utf8(str, &i))
+                return  NULL;
+	return &str->buffer[i];
+}
+
+size_t str_bytes_between(string_t *str, unsigned s, unsigned e) {
+        if (!str)
+                return 0;
+        if (!__convert_index_utf8(str, &s)
+           || !__convert_index_utf8(str, &e))
+                return 0;
+        return e - s;
+}
+
 char* str_substring(string_t *str, unsigned start, unsigned end){
-	if (!str || end < start)
-		return NULL;
+        if (!str)
+                return NULL;
+
 	if (end > str->length)
 		end = str->length;
+
+        if (!__convert_index_utf8(str, &start)
+           || !__convert_index_utf8(str, &end))
+                return NULL;
+
+	if (end < start)
+		return NULL;
+
 	size_t len = end - start;
 	char *substring = malloc((len + 1) * sizeof(char));
-	assert(substring);
+        if (!substring)
+                return NULL;
 	memcpy(substring, &str->buffer[start], len * sizeof(char));
 	substring[len] = '\0';
 	return substring;
@@ -206,6 +288,12 @@ size_t str_length(string_t *str){
 	if (!str)
 		return 0;
 	return str->length;
+}
+
+size_t str_length_utf8(string_t *str){
+	if (!str)
+		return 0;
+        return __utf8_length(str);
 }
 
 char* str_tok(string_t *str, char *tokens){
@@ -271,21 +359,21 @@ char** str_split(string_t *str, char *delim){
 }
 
 int str_find_substring(string_t *str, const char *substr, unsigned start_at){
-        if (!str || !substr)
-                return -2;
-        if (start_at >= str->length)
-                return -3;
-        for (size_t i = start_at; i < str->length; i++){
-                const char *c = substr;
-                for (size_t j = i; j < str->length; j++){
-                        if (*c != str->buffer[j])
-                                break;
-                        c++;
+	if (!str || !substr)
+		return -2;
+	if (start_at >= str->length)
+		return -3;
+	for (size_t i = start_at; i < str->length; i++){
+		const char *c = substr;
+		for (size_t j = i; j < str->length; j++){
+			if (*c != str->buffer[j])
+				break;
+			c++;
 			if (*c == L'\0')
                                 return i;
 		}
-        }
-        return -1;
+	}
+	return -1;
 }
 
 int str_replace(string_t *str, const char *substr, const char *replacement){
@@ -295,11 +383,29 @@ int str_replace(string_t *str, const char *substr, const char *replacement){
 	int i = str_find_substring(str, substr, 0);
         while (i >= 0){
                 n_replacements++;
-		str_remove_range(str, i, i + substr_len);
-		str_insert_cstr(str, replacement, replacement_len, i);
+		__remove_byte_range(str, i, i + substr_len);
+		__insert_byte_range(str, replacement, replacement_len, i);
 		i = str_find_substring(str, substr, i + replacement_len);
 	}
 	return n_replacements;
+}
+
+char* str_cloned_cstr(string_t *str) {
+        if (!str) return NULL;
+        char *result = malloc((str->length + 1) * sizeof(wchar_t));
+        memcpy(result, str->buffer, str->length * sizeof(wchar_t));
+        result[str->length] = L'\0';
+        return result;
+}
+
+int str_cmp_cstr(const string_t *str, const char *cstr) {
+        if (!str || !cstr) return 0;
+        for (size_t i = 0; i < str->length; i++) {
+                int c = str->buffer[i] - cstr[i];
+                if (c != 0)
+                        return c;
+        }
+        return 0;
 }
 
 void str_shrink(string_t *str){

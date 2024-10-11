@@ -209,7 +209,7 @@ wchar_t* wstr_to_cwstr(const wstring_t *wstr){
 
 static void __add_null_term(wstring_t *wstr) {
         assert(wstr);
-	if (wstr->length == wstr->buffer_size)
+	if (wstr->length >= wstr->buffer_size)
 		__resize_buffer(wstr, wstr->buffer_size * GROW_FACTOR);
 	wstr->buffer[wstr->length] = '\0';
 }

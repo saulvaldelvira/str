@@ -69,12 +69,12 @@ int str_remove_range(string_t *str, unsigned start, unsigned end);
 /**
  * Gets the character at the given index
  */
-char str_get_at(string_t *str, unsigned index);
+wchar_t str_get_at(string_t *str, unsigned index);
 
 /**
  * Sets the character at the given index
  */
-int str_set_at(string_t *str, unsigned index, char c);
+int str_set_at(string_t *str, unsigned index, wchar_t c);
 
 /**
  * Inserts the given cstring at the given index.
@@ -100,6 +100,10 @@ char* str_to_cstr(string_t *str);
  */
 const char* str_get_buffer(string_t *str);
 
+const char* str_get_buffer_at(string_t *str, unsigned i);
+
+size_t str_bytes_between(string_t *str, unsigned s, unsigned e);
+
 /**
  * Returns a substring of the string_t in the range [start, end)
  */
@@ -113,7 +117,9 @@ string_t* str_dup(string_t *str);
 /**
  * Returns the length of the string_t
  */
-size_t str_length(string_t *str);
+/* size_t str_length(string_t *str); */
+
+size_t str_length_utf8(string_t *str);
 
 /**
  * Splits the string_t into substrings, using the characters
@@ -154,11 +160,15 @@ int str_find_substring(string_t *str, const char *substr, unsigned start_at);
 */
 int str_replace(string_t *wstr, const char *substr, const char *replacement);
 
+char* str_cloned_cstr(string_t *str);
+
 /**
  * Transforms all the charcters in the string_t, one by one,
  * using the given function.
  */
 int str_transform(string_t *str, char(*func)(char));
+
+int str_cmp_cstr(const string_t *str, const char *cstr);
 
 /**
  * Shrinks the given string to fit it's content
