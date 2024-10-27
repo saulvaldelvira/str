@@ -2,6 +2,7 @@
  * wstr.c - wstring_t implementation.
  * Author: Saúl Valdelvira (2023)
  */
+#define _POSIX_C_SOURCE 200809L
 #include "wstr.h"
 #include <stdlib.h>
 #include <assert.h>

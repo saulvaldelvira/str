@@ -2,6 +2,7 @@
  * str.c - string_t implementation.
  * Author: Saúl Valdelvira (2023)
  */
+#define _POSIX_C_SOURCE 200809L
 #include "str.h"
 #include <stdlib.h>
 #include <assert.h>
