@@ -293,7 +293,7 @@ wchar_t** wstr_split(wstring_t *wstr, wchar_t *delim){
 		i = wstr_find_substring(wstr, delim, i + delim_len);
 	}
 	count++; // For the NULL element at the end
-	wchar_t **split = malloc(count * sizeof(wchar_t*));
+	wchar_t **split = calloc(count, sizeof(wchar_t*));
 	wchar_t **ptr = split;
 	int prev_i = 0;
 	i = wstr_find_substring(wstr, delim, 0);
@@ -306,9 +306,11 @@ wchar_t** wstr_split(wstring_t *wstr, wchar_t *delim){
 		prev_i = i + delim_len;
 		i = wstr_find_substring(wstr, delim, prev_i);
 	}
-	if ((size_t)prev_i < wstr->length)
-		*ptr = wstr_substring(wstr, prev_i, wstr->length);
-	split[count - 1] = NULL;
+	if ((size_t)prev_i < wstr->length) {
+                *ptr = wstr_substring(wstr, prev_i, wstr->length);
+                ptr++;
+        }
+        *ptr = NULL;
 	return split;
 }
 
